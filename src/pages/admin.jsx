@@ -9,6 +9,11 @@ export default function Admin() {
   const [products, setProducts] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+
+  navigate("/login");
+};
 
  useEffect(() => {
   const token = localStorage.getItem("token");
@@ -34,9 +39,14 @@ export default function Admin() {
 
   const deleteProduct = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-      });
+     const token = localStorage.getItem("token");
+
+await fetch(`http://localhost:5000/api/products/${id}`, {
+  method: "DELETE",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
       fetchProducts();
     } catch (error) {
@@ -70,13 +80,16 @@ export default function Admin() {
 
       const method = editingId ? "PUT" : "POST";
 
-      await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(product),
-      });
+     const token = localStorage.getItem("token");
+
+await fetch(url, {
+  method,
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(product),
+});
 
       alert(
         editingId
@@ -99,9 +112,18 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-black text-white px-6 py-20">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-5xl font-black mb-12">
-          Panel Admin
-        </h1>
+        <div className="flex justify-between items-center mb-12">
+  <h1 className="text-5xl font-black">
+    Panel Admin
+  </h1>
+
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 px-6 py-3 rounded-2xl font-bold"
+  >
+    Logout
+  </button>
+</div>
 
         <form
           onSubmit={handleSubmit}
