@@ -1,28 +1,22 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 export default function Products() {
-  const products = [
-    {
-      id: 1,
-      name: "Nike Air Max",
-      price: "$189.999",
-      image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      name: "iPhone 16 Pro",
-      price: "$2.499.999",
-      image:
-        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop",
-    },
-  ];
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <section className="max-w-7xl mx-auto px-6 pb-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {products.map((product) => (
           <div
-            key={product.id}
+            key={product._id}
             className="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800"
           >
             <img
@@ -37,14 +31,14 @@ export default function Products() {
               </h3>
 
               <p className="text-zinc-400 mt-3 text-xl">
-                {product.price}
+                ${product.price}
               </p>
-            <Link to={`/product/${product.id}`}>
-  <button className="mt-6 w-full bg-white text-black py-4 rounded-2xl font-bold">
-    Ver producto
-  </button>
-</Link>
-              
+
+              <Link to={`/product/${product._id}`}>
+                <button className="mt-6 w-full bg-white text-black py-4 rounded-2xl font-bold">
+                  Ver producto
+                </button>
+              </Link>
             </div>
           </div>
         ))}
