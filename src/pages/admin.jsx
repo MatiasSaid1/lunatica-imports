@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Admin() {
   const [name, setName] = useState("");
@@ -6,10 +7,18 @@ export default function Admin() {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [products, setProducts] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login");
+  } else {
     fetchProducts();
-  }, []);
+  }
+}, []);
 
   const fetchProducts = async () => {
     try {
@@ -35,6 +44,15 @@ export default function Admin() {
     }
   };
 
+  const editProduct = (product) => {
+    setEditingId(product._id);
+
+    setName(product.name);
+    setPrice(product.price);
+    setImage(product.image);
+    setDescription(product.description);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,15 +64,25 @@ export default function Admin() {
     };
 
     try {
-      await fetch("http://localhost:5000/api/products", {
-        method: "POST",
+      const url = editingId
+        ? `http://localhost:5000/api/products/${editingId}`
+        : "http://localhost:5000/api/products";
+
+      const method = editingId ? "PUT" : "POST";
+
+      await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(product),
       });
 
-      alert("Producto creado 🚀");
+      alert(
+        editingId
+          ? "Producto actualizado 🚀"
+          : "Producto creado 🚀"
+      );
 
       fetchProducts();
 
@@ -62,6 +90,7 @@ export default function Admin() {
       setPrice("");
       setImage("");
       setDescription("");
+      setEditingId(null);
     } catch (error) {
       console.log(error);
     }
@@ -110,7 +139,7 @@ export default function Admin() {
           />
 
           <button className="bg-white text-black px-8 py-4 rounded-2xl font-bold">
-            Crear producto
+            {editingId ? "Actualizar producto" : "Crear producto"}
           </button>
         </form>
 
@@ -135,6 +164,13 @@ export default function Admin() {
                   ${product.price}
                 </p>
               </div>
+
+              <button
+                onClick={() => editProduct(product)}
+                className="bg-blue-500 px-5 py-3 rounded-2xl font-bold mr-3"
+              >
+                Editar
+              </button>
 
               <button
                 onClick={() => deleteProduct(product._id)}
