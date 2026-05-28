@@ -27,7 +27,7 @@ export default function Admin() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/products");
+      const res = await fetch("https://lunatica-backend.onrender.com/api/products");
 
       const data = await res.json();
 
@@ -41,7 +41,7 @@ export default function Admin() {
     try {
      const token = localStorage.getItem("token");
 
-await fetch(`http://localhost:5000/api/products/${id}`, {
+await fetch(`https://lunatica-backend.onrender.com/api/products/${id}`, {
   method: "DELETE",
   headers: {
     Authorization: `Bearer ${token}`,
@@ -75,8 +75,8 @@ await fetch(`http://localhost:5000/api/products/${id}`, {
 
     try {
       const url = editingId
-        ? `http://localhost:5000/api/products/${editingId}`
-        : "http://localhost:5000/api/products";
+        ? `https://lunatica-backend.onrender.com/api/products/${editingId}`
+        : "https://lunatica-backend.onrender.com/api/products";
 
       const method = editingId ? "PUT" : "POST";
 

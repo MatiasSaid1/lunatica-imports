@@ -5,7 +5,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("https://lunatica-backend.onrender.com/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((error) => console.log(error));
