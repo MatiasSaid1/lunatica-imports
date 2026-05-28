@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Product = require("../models/Product");
 
-const authMiddleware = require("../middleware/TEMP_AUTH");
+const authMiddleware = require("../middleware/authMiddleware");
 
 router.get("/", async (req, res) => {
   try {
